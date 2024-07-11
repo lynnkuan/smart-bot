@@ -17,7 +17,7 @@ line_bot_api = LineBotApi('7p/pmQaxQEI2j94+foeP+SQ44KUiLIEL3ww8Q2cjxSysMO1HF1phV
 # 必須放上自己的Channel Secret
 handler = WebhookHandler('7f480d9cf76e60d1bb04c372b589eae1')
 
-line_bot_api.push_message('U8e9d4f515c2539e3dd57be4d5aa8e106', TextSendMessage(text='HiHi寶貝帆，我愛你！'))
+line_bot_api.push_message('U8e9d4f515c2539e3dd57be4d5aa8e106', TextSendMessage(text='HiHi該更新囉！'))
 
 # 監聽所有來自 /callback 的 Post Request
 @app.route("/callback", methods=['POST'])
@@ -36,3 +36,36 @@ def callback():
         abort(400)
  
     return 'OK'
+
+# 訊息傳遞區塊
+import re
+import requests
+from bs4 import BeautifulSoup
+import json
+import requests
+import datetime
+
+@handler.add(MessageEvent, message=TextMessage)
+def handle_message(event):
+    message = TextSendMessage(text=event.message.text)
+    line_bot_api.reply_message(event.reply_token,message)
+
+@handler.add(MessageEvent, message=TextMessage)
+def handle_message(event):
+    message = event.message.text
+    def greeding(event):
+        flex_message = TextSendMessage(text='您好，今日想要閱讀哪一類型的新聞',
+                                quick_reply = QuickReply(items=[
+                                    QuickReplyButton(action=MessageAction(label='finance',text='金融')),
+                                    QuickReplyButton(action=MessageAction(label='technology',text='科技')),
+                                    QuickReplyButton(action=MessageAction(label='sustainability',text='永續')),
+                                    QuickReplyButton(action=MessageAction(label='international',text='國際')),
+                                    QuickReplyButton(action=MessageAction(label='law',text='法遵')),
+                                ]))
+        line_bot_api.reply_message(event.reply_token, flex_message)
+
+#主程式
+import os
+if __name__ == "__main__":
+    port = int(os.environ.get('PORT', 5000))
+    app.run(host='0.0.0.0', port=port)
