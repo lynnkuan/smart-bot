@@ -63,6 +63,18 @@ def handle_message(event):
                                     QuickReplyButton(action=MessageAction(label='law',text='法遵')),
                                 ]))
         line_bot_api.reply_message(event.reply_token, flex_message)
+def tixcraft(event):
+        try:
+            response2 = requests.get("https://money.udn.com/money/cate/12017?from=edn_navibar")
+            root = BeautifulSoup(response2.text,"html.parser")
+
+            concerts = root.find_all("div",class_="story_content")                 
+            message2 = ""
+            for concert in concerts:                                                   
+                message2 += concerts.text.strip() + "\n"                
+            line_bot_api.reply_message(event.reply_token,TextSendMessage(text=message2))
+        except:
+            line_bot_api.reply_message(event.reply_token,TextSendMessage(text='tixcraft資料庫更新時段，請稍後再嘗試'))
 
 #主程式
 import os
