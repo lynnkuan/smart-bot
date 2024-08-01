@@ -62,6 +62,11 @@ def handle_message(event):
                                     QuickReplyButton(action=MessageAction(label='international',text='國際')),
                                     QuickReplyButton(action=MessageAction(label='law',text='法遵')),
                                 ]))
+        url = 'https://money.udn.com/money/index'
+        response = request.get(url)
+        if response.status_code == 200:
+         soup =  BeautifulSoup(response.text, 'html.parser')
+         headlines = soup.find_all('li', class_='money-search__item')
         line_bot_api.reply_message(event.reply_token, flex_message)
 def tixcraft(event):
         try:
